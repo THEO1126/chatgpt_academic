@@ -245,3 +245,57 @@ python check_proxy.py
 - 总结大工程源代码时，文本过长、token溢出的问题（目前的方法是直接二分丢弃处理溢出，过于粗暴，有效信息大量丢失）
 - UI不够美观
 
+# 自己的笔记
+**配置config_private.py**
+新建一个 `config_private.py`文件
+```python
+# API_KEY = "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" 此key无效
+# 通过 https://platform.openai.com/account/api-keys 获取appkey
+API_KEY = "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"
+API_URL = "https://api.openai.com/v1/chat/completions"
+
+# 改为True应用代理
+USE_PROXY = True
+if USE_PROXY:
+
+    # 填写格式是 [协议]://  [地址] :[端口] ，
+    # 例如    "socks5h://localhost:11284"
+    # [协议] 常见协议无非socks5h/http，例如 v2*** 和 s** 的默认本地协议是socks5h，cl**h 的默认本地协议是http
+    # [地址] 懂的都懂，不懂就填localhost或者127.0.0.1肯定错不了（localhost意思是代理软件安装在本机上）
+    # [端口] 在代理软件的设置里，不同的代理软件界面不一样，但端口号都应该在最显眼的位置上
+
+    # 代理网络的地址，打开你的科学上网软件查看代理的协议(socks5/http)、地址(localhost)和端口(11284)
+    # proxies = { "http": "socks5h://localhost:11284", "https": "socks5h://localhost:11284", }
+
+    # 使用的是v2ray的代理
+    ### 软件上显示的是【http:10809,socks:10808】
+    proxies = { "http": "http://localhost:10809", "https": "socks5h://localhost:10808", }
+    print('网络代理状态：运行。')
+else:
+    proxies = None
+    print('网络代理状态：未配置。无代理状态下很可能无法访问。')
+    
+'''
+查询代理的地理位置，返回的结果是{'ip': '121.0.97.70', 'network': '121.0.96.0/23', 'version': 'IPv4', 'city': 'Yongin-si', 'region': 'Gyeonggi-do', 'region_code': '41', 'country': 'KR', 'country_name': 'South Korea', 'country_code': 'KR', 'country_code_iso3': 'KOR', 'country_capital': 'Seoul', 'country_tld': '.kr', 'continent_code': 'AS', 'in_eu': False, 'postal': '171', 'latitude': 37.2447, 'longitude': 127.1752, 'timezone': 'Asia/Seoul', 'utc_offset': '+0900', 'country_calling_code': '+82', 'currency': 'KRW', 'currency_name': 'Won', 'languages': 'ko-KR,en', 'country_area': 98480.0, 'country_population': 51635256, 'asn': 'AS138195', 'org': 'MOACK.Co.LTD'}
+代理配置 socks5h://localhost:10808, 代理所在地：South Korea
+'''
+
+# 发送请求到OpenAI后，等待多久判定为超时
+TIMEOUT_SECONDS = 25
+
+# 网页的端口, -1代表随机端口
+WEB_PORT = -1
+
+# 如果OpenAI不响应（网络卡顿、代理失败、KEY失效），重试的次数限制
+MAX_RETRY = 2
+
+# 选择的OpenAI模型是（gpt4现在只对申请成功的人开放）
+LLM_MODEL = "gpt-3.5-turbo"
+
+# 设置并行使用的线程数
+CONCURRENT_COUNT = 100
+
+# 设置用户名和密码
+AUTHENTICATION = [] # [("username", "password"), ("username2", "password2"), ...]
+
+
